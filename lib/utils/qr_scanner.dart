@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:http/http.dart' as http;
 
 class QRScanner extends StatefulWidget {
   QRScanner({Key? key, required this.title}) : super(key: key);
@@ -36,7 +37,7 @@ class _QRScannerState extends State<QRScanner> {
   @override
   Widget build(BuildContext context) {
     // ignore: unnecessary_statements
-    barcode != null ? _launch(barcode!.code) : null;
+    //barcode != null ? _launch(barcode!.code) : null;
     return Scaffold(
       body: Stack(alignment: Alignment.center, children: [
         buildQrView(context),
@@ -71,14 +72,21 @@ class _QRScannerState extends State<QRScanner> {
     }
   }
 
-  Widget buildResult() => Container(
+  Future<void> _bhooo() async {
+    print(Uri.parse(barcode!.code).host.split('.')[Uri.parse(barcode!.code).host.split('.').length - 2]);
+  }
+
+  Widget buildResult(){
+    barcode != null ? _bhooo() : null;
+    return Container(
       padding: EdgeInsets.all(12),
       decoration: BoxDecoration(color: Colors.white),
       child: Text(barcode != null ? 'Result : ${barcode!.code}' : 'Scan code!',
-          maxLines: 3));
+          maxLines: 3));}
 
   Widget buildQrView(BuildContext context)  {
     print('----------------------------------------------------------------------------------------------------------------------------------------------');
+    
     return QRView(
         key: qrKey,
         onQRViewCreated: onQRViewCreated,
