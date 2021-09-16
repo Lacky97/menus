@@ -1,14 +1,17 @@
 import 'dart:io';
 
+import 'package:favicon/favicon.dart';
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
+import 'package:menus/model/qrs.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:http/http.dart' as http;
 
-class QRScanner extends StatefulWidget {
-  QRScanner({Key? key, required this.title}) : super(key: key);
+import '../boxes.dart';
 
-  final String title;
+class QRScanner extends StatefulWidget {
+  QRScanner({Key? key}) : super(key: key);
 
   @override
   _QRScannerState createState() => _QRScannerState();
@@ -22,14 +25,17 @@ class _QRScannerState extends State<QRScanner> {
 
   @override
   void initState() {
-    print('-------------------------------------------------------------------------------------------------------------------------------------------');
+    print(
+        '-------------------------------------------------------------------------------------------------------------------------------------------');
     setState(() {
       oneTime = false;
     });
     super.initState();
   }
+
   @override
   void dispose() {
+    Hive.box('transactions').close();
     controller?.dispose();
     super.dispose();
   }
@@ -56,10 +62,11 @@ class _QRScannerState extends State<QRScanner> {
     controller?.resumeCamera();
   }
 
+
   _launch(url) async {
     print(oneTime);
     if (oneTime) {
-      setState((){
+      setState(() {
         oneTime = false;
       });
       if (barcode != null) {
@@ -72,38 +79,57 @@ class _QRScannerState extends State<QRScanner> {
     }
   }
 
-  Future<void> _bhooo() async {
-    print(Uri.parse(barcode!.code).host.split('.')[Uri.parse(barcode!.code).host.split('.').length - 2]);
+  Future addQR(String siteName, String url) async {
+    print('ci sono');
+    final qr = Qrs()..name = siteName;
+    //..url = url;
+
+
+    final box = Boxes.getQrs();
+    box.add(qr);
   }
 
-  Widget buildResult(){
-    barcode != null ? _bhooo() : null;
-    return Container(
-      padding: EdgeInsets.all(12),
-      decoration: BoxDecoration(color: Colors.white),
-      child: Text(barcode != null ? 'Result : ${barcode!.code}' : 'Scan code!',
-          maxLines: 3));}
+  Future<String> _getNameSite(url) async {
+    var iconUrl = await Favicon.getBest(url.toString());
+    print(iconUrl);
+    //addQR(url.host.split('.')[url.host.split('.').length - 2], url);
+    print(url.host.split('.')[url.host.split('.').length - 2]);
+    return url.host.split('.')[url.host.split('.').length - 2];
+  }
 
-  Widget buildQrView(BuildContext context)  {
-    print('----------------------------------------------------------------------------------------------------------------------------------------------');
-    
+  Widget buildResult() {
+    barcode != null ? _getNameSite(Uri.parse(barcode!.code)) : null;
+    return Container(
+        padding: EdgeInsets.all(12),
+        decoration: BoxDecoration(color: Colors.white),
+        child: Text(
+            barcode != null ? 'Result : ${barcode!.code}' : 'Scan code!',
+            maxLines: 3));
+  }
+
+  Widget buildQrView(BuildContext context) {
+    print(
+        '----------------------------------------------------------------------------------------------------------------------------------------------');
+
     return QRView(
-        key: qrKey,
-        onQRViewCreated: onQRViewCreated,
-        overlay: QrScannerOverlayShape(
-          borderColor: Theme.of(context).accentColor,
-          borderRadius: 10,
-          borderWidth: 10,
-          borderLength: 20,
-          cutOutSize: MediaQuery.of(context).size.width * 0.8,
-        ),
-      );}
+      key: qrKey,
+      onQRViewCreated: onQRViewCreated,
+      overlay: QrScannerOverlayShape(
+        borderColor: Theme.of(context).accentColor,
+        borderRadius: 10,
+        borderWidth: 10,
+        borderLength: 20,
+        cutOutSize: MediaQuery.of(context).size.width * 0.8,
+      ),
+    );
+  }
 
   void onQRViewCreated(QRViewController controller) {
     setState(() => this.controller = controller);
 
-    controller.scannedDataStream
-        .listen((barcode) => setState(() { this.barcode = barcode;
-        oneTime = true;}));
+    controller.scannedDataStream.listen((barcode) => setState(() {
+          this.barcode = barcode;
+          oneTime = true;
+        }));
   }
 }

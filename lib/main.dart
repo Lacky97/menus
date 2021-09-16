@@ -1,10 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:menus/utils/qr_scanner.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 
 import 'menu.dart';
+import 'model/qrs.dart';
 
-void main() {
+void main() async {
+  
+  WidgetsFlutterBinding.ensureInitialized();
+  await Hive.initFlutter();
+  Hive.registerAdapter(QrsAdapter());
+  await Hive.openBox<Qrs>('qr2');
   runApp(MyApp());
 }
 
@@ -17,11 +23,12 @@ class MyApp extends StatelessWidget {
         DeviceOrientation.portraitDown,
       ]);
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: QRScanner(title: 'Flutter Demo Home Page'),
+      home: Menu(),
     );
   }
 }
