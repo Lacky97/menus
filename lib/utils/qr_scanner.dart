@@ -81,8 +81,10 @@ class _QRScannerState extends State<QRScanner> {
 
   Future addQR(String siteName, String url) async {
     print('ci sono');
-    final qr = Qrs()..name = siteName;
-    //..url = url;
+    final qr = Qrs()
+        ..name = siteName;
+        //..url = url
+        //..imageUrl = 
 
 
     final box = Boxes.getQrs();
@@ -91,7 +93,7 @@ class _QRScannerState extends State<QRScanner> {
 
   Future<String> _getNameSite(url) async {
     var iconUrl = await Favicon.getBest(url.toString());
-    print(iconUrl);
+    print(iconUrl.runtimeType);
     //addQR(url.host.split('.')[url.host.split('.').length - 2], url);
     print(url.host.split('.')[url.host.split('.').length - 2]);
     return url.host.split('.')[url.host.split('.').length - 2];

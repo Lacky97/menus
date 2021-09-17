@@ -12,6 +12,6 @@ class Qrs extends HiveObject{
 //  late String url;
 
 //  @HiveField(2)
-//  late String imageUrl;
+//  late Icon imageUrl;
 
 }

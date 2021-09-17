@@ -2,9 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:menus/boxes.dart';
+import 'package:menus/drawer.dart';
+import 'package:menus/model/store.dart';
 import 'package:menus/utils/qr_scanner.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 
+import 'banner.dart';
+import 'constant/app_style.dart';
 import 'model/qrs.dart';
 
 class Menu extends StatefulWidget {
@@ -27,10 +31,28 @@ class _MenuState extends State<Menu> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppStyle.backgroundColor,
+      endDrawer: NavigatorDrawer(),
       appBar: AppBar(
+        
         backgroundColor: Colors.transparent,
         elevation: 0,
-        title: Text('ciaoooooo', style: TextStyle(color: Colors.red)),
+        title: Container(
+            decoration: BoxDecoration(
+              color: AppStyle.thirdColor,
+              borderRadius: BorderRadius.circular(10),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.8),
+                  spreadRadius: 2,
+                  blurRadius: 5,
+                  offset: Offset(0, 4), // changes position of shadow
+                ),
+              ],
+            ),
+            child: Padding(
+                padding: EdgeInsets.all(8.0),
+                child: Text("Menu's", style: TextStyle(color: Colors.white)))),
       ),
       body: ValueListenableBuilder<Box<Qrs>>(
           valueListenable: Boxes.getQrs().listenable(),
@@ -39,10 +61,10 @@ class _MenuState extends State<Menu> {
 
             return GridView.builder(
                 gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-                    maxCrossAxisExtent: 200,
-                    childAspectRatio: 3 / 2,
-                    crossAxisSpacing: 20,
-                    mainAxisSpacing: 20),
+                  maxCrossAxisExtent: 200,
+                  childAspectRatio: 3 / 2,
+                  crossAxisSpacing: 15,
+                ),
                 padding: EdgeInsets.all(8),
                 itemCount: qrs.length,
                 itemBuilder: (BuildContext context, int index) {
@@ -58,6 +80,7 @@ class _MenuState extends State<Menu> {
             MaterialPageRoute(builder: (context) => QRScanner()),
           );
         },
+        backgroundColor: AppStyle.thirdColor,
         tooltip: 'Add Element',
         child: Icon(Icons.add),
       ),
@@ -68,7 +91,9 @@ class _MenuState extends State<Menu> {
     //var width = MediaQuery.of(context).size.width;
     //var height = MediaQuery.of(context).size.height;
 
-    return Card(
+    return MenuBanner(
+        store: Store(name, 'https://it.m.wikipedia.org/favicon.ico'));
+    /*Card(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(20), // if you need this
           side: BorderSide(
@@ -108,5 +133,6 @@ class _MenuState extends State<Menu> {
                         fontSize: 20)),
               ],
             )));
+  }*/
   }
 }
