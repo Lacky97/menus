@@ -1,9 +1,13 @@
 
 import 'package:flutter/material.dart';
 import 'package:menus/constant/app_style.dart';
+import 'package:menus/themebuilder.dart';
 
+// ignore: must_be_immutable
 class NavigatorDrawer extends StatefulWidget {
-  NavigatorDrawer({Key? key}) : super(key: key);
+  NavigatorDrawer({Key? key, required this.brightness}) : super(key: key);
+
+  late Brightness brightness;
 
   @override
   _NavigatorDrawerState createState() => _NavigatorDrawerState();
@@ -17,7 +21,7 @@ class _NavigatorDrawerState extends State<NavigatorDrawer> {
   Widget build(BuildContext context) {
     return Drawer(
       child: Material(
-        color: AppStyle.thirdColor,
+        color: widget.brightness == Brightness.dark ? AppStyle.thirdColorDark : AppStyle.thirdColorLight,
         child: ListView(
           padding: padding,
           children: <Widget>[
@@ -44,7 +48,10 @@ class _NavigatorDrawerState extends State<NavigatorDrawer> {
       leading: Icon(icon, color: color),
       title: Text(text, style: TextStyle(color: color)),
       hoverColor: hoverColor,
-      onTap: () => {}
+      onTap: () => {
+        ThemeBuilder.of(context)!.changeTheme(),
+        Navigator.of(context).pop(),
+      }
     );
   }
 
