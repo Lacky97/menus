@@ -1,6 +1,8 @@
 
 import 'package:flutter/material.dart';
+import 'package:menus/banner.dart';
 import 'package:menus/constant/app_style.dart';
+import 'package:menus/menu.dart';
 import 'package:menus/themebuilder.dart';
 
 // ignore: must_be_immutable
@@ -30,11 +32,35 @@ class _NavigatorDrawerState extends State<NavigatorDrawer> {
               text: 'People',
               icon: Icons.people,
             ),
+            buildRemoveItem(
+              text: 'Remove Elements',
+              icon: Icons.remove,
+            ),
           ],
           )
       ),
     );
   }
+
+
+  Widget buildRemoveItem({
+      required String text,
+      required IconData icon,
+    }) {
+
+    final color = Colors.white;
+    final hoverColor = Colors.white70;
+
+    return ListTile(
+      leading: Icon(icon, color: color),
+      title: Text(text, style: TextStyle(color: color)),
+      hoverColor: hoverColor,
+      onTap: () => {
+        Navigator.of(context).pop(),
+      }
+    );
+  }
+
 
   Widget buildMenuItem({
       required String text,

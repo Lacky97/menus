@@ -5,40 +5,46 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:menus/boxes.dart';
 import 'package:menus/drawer.dart';
 import 'package:menus/model/store.dart';
-import 'package:menus/themebuilder.dart';
 import 'package:menus/utils/qr_scanner.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
-
+import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
+import 'utils/globals.dart' as globals;
 import 'banner.dart';
 import 'constant/app_style.dart';
 import 'model/qrs.dart';
 
-
 // ignore: must_be_immutable
 class Menu extends StatefulWidget {
-
   Menu({Key? key, required this.brightness}) : super(key: key);
 
   late Brightness brightness;
 
   @override
   _MenuState createState() => _MenuState();
+  static _MenuState? of(BuildContext context) {
+    return context.findAncestorStateOfType<_MenuState>();
+  }
 }
 
 class _MenuState extends State<Menu> {
   final qrKey = GlobalKey(debugLabel: 'QR');
   QRViewController? controller;
-  
-
+  bool toShow = false;
   @override
   void dispose() {
     controller?.dispose();
     super.dispose();
   }
 
+  ciao() {
+    print('ciao dalla luna');
+    setState(() {
+      toShow = !toShow;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       endDrawer: NavigatorDrawer(brightness: widget.brightness),
       appBar: AppBar(
@@ -46,11 +52,15 @@ class _MenuState extends State<Menu> {
         elevation: 0,
         title: Container(
             decoration: BoxDecoration(
-              color: widget.brightness == Brightness.dark ? AppStyle.thirdColorDark : AppStyle.thirdColorLight,
+              color: widget.brightness == Brightness.dark
+                  ? AppStyle.thirdColorDark
+                  : AppStyle.thirdColorLight,
               borderRadius: BorderRadius.circular(10),
               boxShadow: [
                 BoxShadow(
-                  color: widget.brightness == Brightness.dark ? Colors.black.withOpacity(0.8) : Colors.grey.withOpacity(0.2),
+                  color: widget.brightness == Brightness.dark
+                      ? Colors.black.withOpacity(0.8)
+                      : Colors.grey.withOpacity(0.2),
                   spreadRadius: 2,
                   blurRadius: 5,
                   offset: Offset(0, 4), // changes position of shadow
@@ -66,7 +76,8 @@ class _MenuState extends State<Menu> {
           builder: (context, box, _) {
             final qrs = box.values.toList().cast<Qrs>();
 
-            return GridView.builder(
+            return AnimationLimiter(
+              child: GridView.builder(
                 gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
                   maxCrossAxisExtent: 200,
                   childAspectRatio: 3 / 2,
@@ -76,9 +87,17 @@ class _MenuState extends State<Menu> {
                 itemCount: qrs.length,
                 itemBuilder: (BuildContext context, int index) {
                   final qr = qrs[index];
-
-                  return _buildCard(qr.name);
-                });
+                  toShow ? print('ciao da menu'):null;
+                  return AnimationConfiguration.staggeredList(
+                    position: index,
+                    duration: const Duration(milliseconds: 1500),
+                    child: SlideAnimation(
+                        verticalOffset: 50.0,
+                        child: FadeInAnimation(child: _buildCard(qr))),
+                  );
+                },
+              ),
+            );
           }),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
@@ -88,15 +107,19 @@ class _MenuState extends State<Menu> {
           );
         },
         foregroundColor: Colors.white,
-        backgroundColor: widget.brightness == Brightness.dark ? AppStyle.thirdColorDark : AppStyle.thirdColorLight,
+        backgroundColor: widget.brightness == Brightness.dark
+            ? AppStyle.thirdColorDark
+            : AppStyle.thirdColorLight,
         tooltip: 'Add Element',
         child: Icon(Icons.add),
       ),
     );
   }
 
-  Widget _buildCard(name) {
+  Widget _buildCard(qr) {
     return MenuBanner(
-        store: Store(name, 'https://it.m.wikipedia.org/favicon.ico'), brightness: widget.brightness);
+        store: Store(qr.name, 'https://it.m.wikipedia.org/favicon.ico'),
+        brightness: widget.brightness,
+        qr: qr);
   }
 }

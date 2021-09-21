@@ -35,6 +35,8 @@ dependencies:
   hive_flutter: ^1.0.0
   favicon: ^1.0.15
   network_to_file_image: ^3.0.1
+  flutter_staggered_animations: ^1.0.0
+  animated_widgets: ^1.1.0
 
 dev_dependencies:
   flutter_test:
@@ -53,6 +55,7 @@ flutter:
   # included with your application, so that you can use the icons in
   # the material Icons class.
   uses-material-design: true
+  
 
   # To add assets to your application, add an assets section, like this:
   # assets:

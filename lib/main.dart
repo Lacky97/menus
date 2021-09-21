@@ -12,7 +12,7 @@ void main() async {
   await Hive.initFlutter();
   Hive.registerAdapter(QrsAdapter());
   await Hive.openBox<Qrs>('qr2');
-        SystemChrome.setPreferredOrientations([
+  SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
   ]);
@@ -31,13 +31,15 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ThemeBuilder(
-      defaultBrightness: Brightness.dark,
-      builder: (context, _brightness) {
-        return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(primaryColor: AppStyle.primaryColor, brightness: _brightness),
-      title: 'Flutter Demo',
-      home: Menu(brightness: _brightness),
-    );});
+        defaultBrightness: Brightness.dark,
+        builder: (context, _brightness) {
+          return MaterialApp(
+            debugShowCheckedModeBanner: false,
+            theme: ThemeData(
+                primaryColor: AppStyle.primaryColor, brightness: _brightness),
+            title: 'Flutter Demo',
+            home: Menu(brightness: _brightness),
+          );
+        });
   }
 }
