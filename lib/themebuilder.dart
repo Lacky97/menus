@@ -27,7 +27,6 @@ class _ThemeBuilderState extends State<ThemeBuilder> {
   }
 
   void changeTheme(){
-    print('ciaoooooooooo');
     setState(() {
       _brightness = _brightness == Brightness.dark ? Brightness.light : Brightness.dark;
     });

@@ -1,3 +1,5 @@
+
+import 'package:favicon/favicon.dart';
 import 'package:hive/hive.dart';
 
 part 'qrs.g.dart';
@@ -8,10 +10,10 @@ class Qrs extends HiveObject{
   @HiveField(0)
   late String name;
 
-//  @HiveField(1)
-//  late String url;
+  @HiveField(1)
+  late String url;
 
-//  @HiveField(2)
-//  late Icon imageUrl;
+  @HiveField(2)
+  late String imageUrl;
 
 }

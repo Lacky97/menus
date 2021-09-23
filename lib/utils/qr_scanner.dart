@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:favicon/favicon.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:menus/model/qrs.dart';
@@ -10,7 +11,9 @@ import 'package:url_launcher/url_launcher.dart';
 import '../boxes.dart';
 
 class QRScanner extends StatefulWidget {
-  QRScanner({Key? key}) : super(key: key);
+  QRScanner({Key? key, required this.boxes}) : super(key: key);
+
+  Box<Qrs> boxes;
 
   @override
   _QRScannerState createState() => _QRScannerState();
@@ -21,28 +24,28 @@ class _QRScannerState extends State<QRScanner> {
   QRViewController? controller;
   Barcode? barcode;
   late bool oneTime;
-
+  late bool areEqual;
   @override
   void initState() {
     print(
         '-------------------------------------------------------------------------------------------------------------------------------------------');
     setState(() {
       oneTime = false;
+      areEqual = false;
     });
     super.initState();
   }
 
   @override
   void dispose() {
-    Hive.box('transactions').close();
+    //Hive.box('transactions').close();
     controller?.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    // ignore: unnecessary_statements
-    //barcode != null ? _launch(barcode!.code) : null;
+    barcode != null ? _launch(barcode!.code) : null;
     return Scaffold(
       body: Stack(alignment: Alignment.center, children: [
         buildQrView(context),
@@ -61,7 +64,6 @@ class _QRScannerState extends State<QRScanner> {
     controller?.resumeCamera();
   }
 
-
   _launch(url) async {
     print(oneTime);
     if (oneTime) {
@@ -70,7 +72,13 @@ class _QRScannerState extends State<QRScanner> {
       });
       if (barcode != null) {
         if (await canLaunch(url)) {
-          await launch(url);
+          await launch(url).then((value) => !oneTime
+              ? addQR(
+                  Uri.parse(url)
+                      .host
+                      .split('.')[Uri.parse(url).host.split('.').length - 2],
+                  url.toString())
+              : null);
         } else {
           throw 'Could not launch $url';
         }
@@ -79,22 +87,34 @@ class _QRScannerState extends State<QRScanner> {
   }
 
   Future addQR(String siteName, String url) async {
-    print('ci sono');
-    final qr = Qrs()
-        ..name = siteName;
-        //..url = url
-        //..imageUrl = 
+    var iconUrl = await Favicon.getBest(url.toString());
+   
+    widget.boxes.values.forEach((element) {
+      print(element.name);
+      print(siteName);
+      print(element.name == siteName);
+      if (element.name == siteName)
+        setState(() {
+          areEqual = true;
+        });
+    });
+    if (!areEqual) {
+      print('ci sono pure io ');
+      print(iconUrl!.url.toString());
+      final qr = Qrs()..name = siteName
+      ..url = url
+      ..imageUrl = iconUrl.url.toString();
 
-
-    final box = Boxes.getQrs();
-    box.add(qr);
+      final box = Boxes.getQrs();
+      box.add(qr);
+    } else {
+      setState(() {
+        areEqual = false;
+      });
+    }
   }
 
   Future<String> _getNameSite(url) async {
-    var iconUrl = await Favicon.getBest(url.toString());
-    print(iconUrl.runtimeType);
-    //addQR(url.host.split('.')[url.host.split('.').length - 2], url);
-    print(url.host.split('.')[url.host.split('.').length - 2]);
     return url.host.split('.')[url.host.split('.').length - 2];
   }
 

@@ -1,9 +1,11 @@
+import 'package:favicon/favicon.dart';
+
 class Store{
   final String name;
 
   final String url;
 
-  //final Icon imageUrl;
+  final String imageUrl;
 
-  Store(this.name, this.url);
+  Store(this.name, this.url, this.imageUrl);
 }

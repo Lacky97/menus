@@ -37,6 +37,9 @@ class _MenuBannerState extends State<MenuBanner>
   void initState() {
     controller = AnimationController(
         duration: const Duration(milliseconds: 500), vsync: this);
+    print('-------------------------------------------------------------------------------------------------------------------');
+    print('porca di quella puttana ' +widget.store.url);
+    print('-------------------------------------------------------------------------------------------------------------------');
     super.initState();
   }
 
@@ -53,8 +56,9 @@ class _MenuBannerState extends State<MenuBanner>
   }
 
   void deleteQr() {
+    String name = widget.qr.name;
     widget.qr.delete();
-
+    Menu.of(context)!.displayDeleteMotionToast(context, name);
     // launch a little snackbar
   }
 
@@ -66,7 +70,7 @@ class _MenuBannerState extends State<MenuBanner>
           child: GestureDetector(
             onLongPress: () => {
               controller.forward(from: 0.0),
-              Menu.of(context)!.ciao(),
+              Menu.of(context)!.notShow(),
               setState(() {
                 globals.enabled = !globals.enabled;
                 globals.delete = !globals.delete;
@@ -123,8 +127,17 @@ class _MenuBannerState extends State<MenuBanner>
                               ? AppStyle.secondaryColorDark
                               : AppStyle.secondaryColorLight,
                         ),
-                        child: Image.network(widget.store.url,
-                            width: 40.0, height: 40.0, fit: BoxFit.cover),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            color: Colors.white,
+                            border: Border.all(
+                            color: Colors.white,
+                            width: 4,
+                          ),
+                          ),
+                          child: Image.network(widget.store.imageUrl,
+                            width: 40.0, height: 40.0, fit: BoxFit.cover)),
                       ),
                     ]),
                   ),

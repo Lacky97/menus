@@ -16,15 +16,22 @@ class QrsAdapter extends TypeAdapter<Qrs> {
     final fields = <int, dynamic>{
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
-    return Qrs()..name = fields[0] as String;
+    return Qrs()
+      ..name = fields[0] as String
+      ..url = fields[1] as String
+      ..imageUrl = fields[2] as String;
   }
 
   @override
   void write(BinaryWriter writer, Qrs obj) {
     writer
-      ..writeByte(1)
+      ..writeByte(3)
       ..writeByte(0)
-      ..write(obj.name);
+      ..write(obj.name)
+      ..writeByte(1)
+      ..write(obj.url)
+      ..writeByte(2)
+      ..write(obj.imageUrl);
   }
 
   @override

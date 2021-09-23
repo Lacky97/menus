@@ -37,6 +37,7 @@ dependencies:
   network_to_file_image: ^3.0.1
   flutter_staggered_animations: ^1.0.0
   animated_widgets: ^1.1.0
+  motion_toast: ^1.4.0
 
 dev_dependencies:
   flutter_test:

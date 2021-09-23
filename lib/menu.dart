@@ -6,12 +6,15 @@ import 'package:menus/boxes.dart';
 import 'package:menus/drawer.dart';
 import 'package:menus/model/store.dart';
 import 'package:menus/utils/qr_scanner.dart';
+import 'package:motion_toast/resources/arrays.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'utils/globals.dart' as globals;
 import 'banner.dart';
 import 'constant/app_style.dart';
 import 'model/qrs.dart';
+
+import 'package:motion_toast/motion_toast.dart';
 
 // ignore: must_be_immutable
 class Menu extends StatefulWidget {
@@ -36,8 +39,17 @@ class _MenuState extends State<Menu> {
     super.dispose();
   }
 
-  ciao() {
-    print('ciao dalla luna');
+  displayDeleteMotionToast(BuildContext context, String name) {
+    MotionToast.warning(
+      title: "Elemento eliminato",
+      titleStyle: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
+      description: "Hai eleminato l'elemento " + name,
+      animationType: ANIMATION.FROM_BOTTOM,
+      position: MOTION_TOAST_POSITION.BOTTOM,
+    ).show(context);
+  }
+
+  notShow() {
     setState(() {
       toShow = !toShow;
     });
@@ -103,7 +115,7 @@ class _MenuState extends State<Menu> {
         onPressed: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => QRScanner()),
+            MaterialPageRoute(builder: (context) => QRScanner(boxes: Boxes.getQrs())),
           );
         },
         foregroundColor: Colors.white,
@@ -118,7 +130,7 @@ class _MenuState extends State<Menu> {
 
   Widget _buildCard(qr) {
     return MenuBanner(
-        store: Store(qr.name, 'https://it.m.wikipedia.org/favicon.ico'),
+        store: Store(qr.name, qr.url, qr.imageUrl),
         brightness: widget.brightness,
         qr: qr);
   }
