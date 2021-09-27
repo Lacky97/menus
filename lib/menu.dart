@@ -89,7 +89,11 @@ class _MenuState extends State<Menu> {
             final qrs = box.values.toList().cast<Qrs>();
 
             return AnimationLimiter(
-              child: GridView.builder(
+              child: qrs.length == 0 ? Image.asset(
+                              'assets/click/Clicca_per_aggiungere_' + (widget.brightness  == Brightness.dark ? 'dark' : 'light') + '.png',
+                              height: 900.0,
+                              width: 900.0,
+                            ): GridView.builder(
                 gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
                   maxCrossAxisExtent: 200,
                   childAspectRatio: 3 / 2,
@@ -112,6 +116,7 @@ class _MenuState extends State<Menu> {
             );
           }),
       floatingActionButton: FloatingActionButton(
+        
         onPressed: () {
           Navigator.push(
             context,
