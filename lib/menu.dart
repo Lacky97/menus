@@ -109,7 +109,9 @@ class _MenuState extends State<Menu> {
                     duration: const Duration(milliseconds: 1500),
                     child: SlideAnimation(
                         verticalOffset: 50.0,
-                        child: FadeInAnimation(child: _buildCard(qr))),
+                        child: FadeInAnimation(child: Hero(
+                          tag: 'bhoo'+index.toString(),
+                          child:_buildCard(qr, 'bhoo'+index.toString())))),
                   );
                 },
               ),
@@ -133,10 +135,11 @@ class _MenuState extends State<Menu> {
     );
   }
 
-  Widget _buildCard(qr) {
+  Widget _buildCard(qr, index) {
     return MenuBanner(
         store: Store(qr.name, qr.url, qr.imageUrl),
         brightness: widget.brightness,
-        qr: qr);
+        qr: qr,
+        index: index);
   }
 }

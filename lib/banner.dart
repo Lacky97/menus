@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:menus/constant/app_style.dart';
 import 'package:menus/menu.dart';
 import 'package:menus/second.dart';
+import 'package:modals/modals.dart';
+import 'package:spring_button/spring_button.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'dart:math' as math;
 import 'model/qrs.dart';
@@ -12,37 +14,35 @@ import 'utils/globals.dart' as globals;
 
 // ignore: must_be_immutable
 class MenuBanner extends StatefulWidget {
-  MenuBanner(
-      {Key? key,
-      required this.store,
-      required this.brightness,
-      required this.qr,})
-      : super(key: key);
+  MenuBanner({
+    Key? key,
+    required this.store,
+    required this.brightness,
+    required this.qr,
+    required this.index,
+  }) : super(key: key);
 
   final Store store;
   late Brightness brightness;
   final Qrs qr;
+  final String index;
 
   @override
   _MenuBannerState createState() => _MenuBannerState();
 }
 
-class _MenuBannerState extends State<MenuBanner>
-    with SingleTickerProviderStateMixin {
+class _MenuBannerState extends State<MenuBanner> with TickerProviderStateMixin {
   bool delete = false;
 
   final TextEditingController textController = TextEditingController();
   late AnimationController controller;
+  var txt = TextEditingController();
 
   @override
   void initState() {
     controller = AnimationController(
         duration: const Duration(milliseconds: 500), vsync: this);
-    print(
-        '-------------------------------------------------------------------------------------------------------------------');
-    print('porca di quella puttana ' + widget.store.url);
-    print(
-        '-------------------------------------------------------------------------------------------------------------------');
+    txt.text = capitalize(widget.store.name);
     super.initState();
   }
 
@@ -65,8 +65,44 @@ class _MenuBannerState extends State<MenuBanner>
     // launch a little snackbar
   }
 
+  Widget row(String text, Color color) {
+    return Padding(
+      padding: EdgeInsets.all(12.5),
+      child: Container(
+        height: 50,
+        decoration: BoxDecoration(
+          boxShadow: [
+                          BoxShadow(
+                            color: widget.brightness == Brightness.dark
+                                ? Colors.black.withOpacity(0.8)
+                                : Colors.grey.withOpacity(0.3),
+                            spreadRadius: 2,
+                            blurRadius: 4,
+                            offset: Offset(0, 5), // changes position of shadow
+                          ),
+                        ],
+          color: color,
+          borderRadius: const BorderRadius.all(const Radius.circular(10.0)),
+        ),
+        child: Center(
+          child: Text(
+            text,
+            style: const TextStyle(
+              
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+              fontSize: 20,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    var height = MediaQuery.of(context).size.height;
+    var width = MediaQuery.of(context).size.width;
     return Container(
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: AppStyle.padding),
@@ -80,23 +116,79 @@ class _MenuBannerState extends State<MenuBanner>
             })
           },
           onTap: () => {
-            !globals.delete ? _launch(widget.store.url) : 
-            Navigator.push(
-                context,
-                PageRouteBuilder(
-                    transitionDuration: Duration(seconds: 2),
-                    pageBuilder: (context, animation, animationTime) =>
-                        SecondPage(store: widget.store, brightness: widget.brightness),
-                    transitionsBuilder:
-                        (context, animation, animationTime, child) {
-                      animation = CurvedAnimation(
-                          parent: animation, curve: Curves.elasticInOut);
-                      return ScaleTransition(
-                        alignment: Alignment(0.0,0.0),
-                        scale: animation,
-                        child: child,
-                      );
-                    }))
+            globals.delete
+                ? _launch(widget.store.url)
+                : showModalBottomSheet<void>(
+                    backgroundColor: Colors.transparent,
+                    context: context,
+                    builder: (BuildContext context) => SingleChildScrollView(
+                            child: Container(
+                          height: height * 0.55,
+                          decoration: BoxDecoration(
+                              color: widget.brightness == Brightness.dark
+                                  ? AppStyle.secondaryColorDark
+                                  : AppStyle.secondaryColorLight,
+                              borderRadius: BorderRadius.only(
+                                topRight: Radius.circular(30),
+                                topLeft: Radius.circular(30),
+                              )),
+                          child: Padding(
+                              padding: EdgeInsets.fromLTRB(width * .15,
+                                  height * .05, width * .15, height * .05),
+                              child: Column(children: [
+                                Align(
+                                  alignment: Alignment.centerLeft,
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(10),
+                                      color: Colors.white,
+                                      border: Border.all(
+                                        color: Colors.white,
+                                        width: 4,
+                                      ),
+                                    ),
+                                    child: Image.network(
+                                      widget.store.imageUrl,
+                                      width: 60.0,
+                                      height: 60.0,
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(height: 30),
+                                Container(
+                                    width: width * .7,
+                                    child: TextField(
+                                      style: TextStyle(
+                                          color: Colors.white, fontSize: 25),
+                                      controller: txt,
+                                      decoration: InputDecoration(
+                                        contentPadding: EdgeInsets.all(3.0),
+                                        isDense: true,
+                                        enabledBorder: UnderlineInputBorder(
+                                          borderSide:
+                                              BorderSide(color: Colors.white),
+                                        ),
+                                      ),
+                                    )),
+                                SizedBox(height: 20),
+                                SpringButton(
+                                  SpringButtonType.OnlyScale,
+                                  row(
+                                    "Save",
+                                    Colors.green.shade400,
+                                  ),
+                                ),
+                                SpringButton(
+                                  SpringButtonType.OnlyScale,
+                                  row(
+                                    "Cancel",
+                                    Colors.red.shade400,
+                                  ),
+                                ),
+                              ]) //widget.store.name,
+
+                              ),
+                        )))
           },
           child: ShakeAnimatedWidget(
             enabled: globals.enabled,
@@ -133,8 +225,7 @@ class _MenuBannerState extends State<MenuBanner>
                   left: 10,
                   right: 0,
                   child: Row(children: [
-                    AnimatedContainer(
-                      duration: Duration(seconds: 1),
+                    Container(
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(20),
                         border: Border.all(
@@ -147,23 +238,21 @@ class _MenuBannerState extends State<MenuBanner>
                             ? AppStyle.secondaryColorDark
                             : AppStyle.secondaryColorLight,
                       ),
-                      child: Hero(
-                          tag: 'myimage',
-                          child: Container(
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10),
-                              color: Colors.white,
-                              border: Border.all(
-                                color: Colors.white,
-                                width: 4,
-                              ),
-                            ),
-                            child: Image.network(
-                              widget.store.imageUrl,
-                              width: 40.0,
-                              height: 40.0,
-                            ),
-                          )),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          color: Colors.white,
+                          border: Border.all(
+                            color: Colors.white,
+                            width: 4,
+                          ),
+                        ),
+                        child: Image.network(
+                          widget.store.imageUrl,
+                          width: 40.0,
+                          height: 40.0,
+                        ),
+                      ),
                     ),
                   ]),
                 ),
