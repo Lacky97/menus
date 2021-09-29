@@ -72,16 +72,16 @@ class _MenuState extends State<Menu> {
                 BoxShadow(
                   color: widget.brightness == Brightness.dark
                       ? Colors.black.withOpacity(0.8)
-                      : Colors.grey.withOpacity(0.2),
+                      : Colors.black.withOpacity(0.8),
                   spreadRadius: 2,
                   blurRadius: 5,
-                  offset: Offset(0, 4), // changes position of shadow
+                  offset: Offset(-5, 3), // changes position of shadow
                 ),
               ],
             ),
             child: Padding(
                 padding: EdgeInsets.all(8.0),
-                child: Text("Menu's", style: TextStyle(color: Colors.white)))),
+                child: Text("Menus", style: TextStyle(color: Colors.white)))),
       ),
       body: ValueListenableBuilder<Box<Qrs>>(
           valueListenable: Boxes.getQrs().listenable(),

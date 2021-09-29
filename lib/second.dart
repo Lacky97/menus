@@ -52,7 +52,7 @@ class _SecondPageState extends State<SecondPage> {
               child: Padding(
                   padding: EdgeInsets.all(8.0),
                   child:
-                      Text("Menu's", style: TextStyle(color: Colors.white)))),
+                      Text("Menus", style: TextStyle(color: Colors.white)))),
         ),
         body: Hero(
           tag: widget.index,
