@@ -9,7 +9,6 @@ import 'package:menus/utils/qr_scanner.dart';
 import 'package:motion_toast/resources/arrays.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
-import 'utils/globals.dart' as globals;
 import 'banner.dart';
 import 'constant/app_style.dart';
 import 'model/qrs.dart';
@@ -70,9 +69,7 @@ class _MenuState extends State<Menu> {
               borderRadius: BorderRadius.circular(10),
               boxShadow: [
                 BoxShadow(
-                  color: widget.brightness == Brightness.dark
-                      ? Colors.black.withOpacity(0.8)
-                      : Colors.black.withOpacity(0.8),
+                  color: Colors.black.withOpacity(0.8),
                   spreadRadius: 2,
                   blurRadius: 5,
                   offset: Offset(-5, 3), // changes position of shadow
@@ -103,7 +100,8 @@ class _MenuState extends State<Menu> {
                 itemCount: qrs.length,
                 itemBuilder: (BuildContext context, int index) {
                   final qr = qrs[index];
-                  toShow ? print('ciao da menu'):null;
+                  // ignore: unnecessary_statements
+                  toShow ? print('ciao da menu'): null;
                   return AnimationConfiguration.staggeredList(
                     position: index,
                     duration: const Duration(milliseconds: 1500),

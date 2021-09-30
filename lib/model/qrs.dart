@@ -1,5 +1,4 @@
 
-import 'package:favicon/favicon.dart';
 import 'package:hive/hive.dart';
 
 part 'qrs.g.dart';

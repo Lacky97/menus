@@ -10,6 +10,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../boxes.dart';
 
+// ignore: must_be_immutable
 class QRScanner extends StatefulWidget {
   QRScanner({Key? key, required this.boxes}) : super(key: key);
 
@@ -45,6 +46,7 @@ class _QRScannerState extends State<QRScanner> {
 
   @override
   Widget build(BuildContext context) {
+    // ignore: unnecessary_statements
     barcode != null ? _launch(barcode!.code) : null;
     return Scaffold(
       body: Stack(alignment: Alignment.center, children: [
@@ -119,6 +121,7 @@ class _QRScannerState extends State<QRScanner> {
   }
 
   Widget buildResult() {
+    // ignore: unnecessary_statements
     barcode != null ? _getNameSite(Uri.parse(barcode!.code)) : null;
     return Container(
         padding: EdgeInsets.all(12),

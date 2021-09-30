@@ -1,8 +1,6 @@
 
 import 'package:flutter/material.dart';
-import 'package:menus/banner.dart';
 import 'package:menus/constant/app_style.dart';
-import 'package:menus/menu.dart';
 import 'package:menus/themebuilder.dart';
 
 // ignore: must_be_immutable

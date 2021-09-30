@@ -1,11 +1,9 @@
 import 'package:animated_widgets/widgets/rotation_animated.dart';
 import 'package:animated_widgets/widgets/shake_animated_widget.dart';
-import 'package:emoji_alert/arrays.dart';
-import 'package:emoji_alert/emoji_alert.dart';
 import 'package:flutter/material.dart';
 import 'package:menus/constant/app_style.dart';
 import 'package:menus/menu.dart';
-import 'package:spring_button/spring_button.dart';
+import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'dart:math' as math;
 import 'model/qrs.dart';
@@ -73,12 +71,10 @@ class _MenuBannerState extends State<MenuBanner> with TickerProviderStateMixin {
         decoration: BoxDecoration(
           boxShadow: [
             BoxShadow(
-              color: widget.brightness == Brightness.dark
-                  ? Colors.black.withOpacity(0.8)
-                  : Colors.black.withOpacity(0.8),
+              color: Colors.black.withOpacity(0.8),
               spreadRadius: 2,
               blurRadius: 4,
-              offset: Offset(0, 5), // changes position of shadow
+              offset: Offset(-5, 5), // changes position of shadow
             ),
           ],
           color: color,
@@ -100,7 +96,7 @@ class _MenuBannerState extends State<MenuBanner> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    var height = MediaQuery.of(context).size.height;
+    //var height = MediaQuery.of(context).size.height;
     var width = MediaQuery.of(context).size.width;
     return Container(
       child: Padding(
@@ -117,7 +113,150 @@ class _MenuBannerState extends State<MenuBanner> with TickerProviderStateMixin {
           onTap: () => {
             globals.delete
                 ? _launch(widget.store.url)
-                : EmojiAlert(
+                : Alert(
+                    style: AlertStyle(
+                      backgroundColor: widget.brightness == Brightness.dark
+                          ? AppStyle.secondaryColorDark
+                          : AppStyle.secondaryColorLight,
+                      overlayColor: Colors.black54,
+                      isCloseButton: false,
+                      isOverlayTapDismiss: true,
+                      titleStyle: TextStyle(
+                          shadows: [
+                            Shadow(
+                              color: Colors.black.withOpacity(0.8),
+                              offset: Offset(-3, 4.0),
+                              blurRadius: 8.0,
+                            ),
+                          ],
+                          fontSize: 25,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white),
+                      animationDuration: Duration(milliseconds: 400),
+                      alertBorder: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15.0),
+                      ),
+                      alertAlignment: Alignment.center,
+                    ),
+                    context: context,
+                    title: "Rinomina",
+                    content: Column(
+                      children: [
+                        SizedBox(height: 10),
+                        Align(
+                          alignment: Alignment.centerLeft,
+                          child: Container(
+                            decoration: BoxDecoration(
+                              boxShadow: [
+                                BoxShadow(
+                                  color: widget.brightness == Brightness.dark
+                                      ? Colors.black.withOpacity(0.8)
+                                      : Colors.black.withOpacity(0.8),
+                                  spreadRadius: 2,
+                                  blurRadius: 5,
+                                  offset: Offset(
+                                      -5, 3), // changes position of shadow
+                                )
+                              ],
+                              borderRadius: BorderRadius.circular(10),
+                              color: Colors.white,
+                              border: Border.all(
+                                color: Colors.white,
+                                width: 4,
+                              ),
+                            ),
+                            child: Image.network(
+                              widget.store.imageUrl,
+                              width: 60.0,
+                              height: 60.0,
+                            ),
+                          ),
+                        ),
+                        SizedBox(height: 30),
+                        Container(
+                            width: width * .7,
+                            decoration: BoxDecoration(
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withOpacity(0.8),
+                                  spreadRadius: 2,
+                                  blurRadius: 4,
+                                  offset: Offset(
+                                      -5, 5), // changes position of shadow
+                                ),
+                              ],
+                              borderRadius: const BorderRadius.all(
+                                  const Radius.circular(10.0)),
+                            ),
+                            child: TextField(
+                              style:
+                                  TextStyle(color: Colors.black, fontSize: 25, fontWeight: FontWeight.bold),
+                              controller: txt,
+                              decoration: InputDecoration(
+                                  isDense: true,
+                                  counterText: "",
+                                  contentPadding: EdgeInsets.all(10.0),
+                                  filled: true,
+                                  fillColor: Colors.white,
+                                  border: OutlineInputBorder(
+                                      borderRadius:
+                                          new BorderRadius.circular(10.0),
+                                      borderSide: BorderSide.none)),
+                              textAlign: TextAlign.start,
+                              maxLines: 1,
+                              maxLength: 20,
+                              // controller: _locationNameTextController,
+                            )),
+                      ],
+                    ),
+                    buttons: [
+                      DialogButton(
+                        splashColor: Colors.red.shade400,
+                        child: Text(
+                          "Cancel",
+                          style: TextStyle(
+                              shadows: [
+                                Shadow(
+                                  color: Colors.black.withOpacity(0.8),
+                                  offset: Offset(-2, 2.0),
+                                  blurRadius: 8.0,
+                                ),
+                              ],
+                              color: Colors.white,
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold),
+                        ),
+                        onPressed: () => Navigator.pop(context),
+                        width: 120,
+                        color: Color.fromRGBO(239, 83, 80, 1),
+                      ),
+                      DialogButton(
+                        
+                        child: Text(
+                          "Save",
+                          style: TextStyle(
+                              shadows: [
+                                Shadow(
+                                  color: Colors.black.withOpacity(0.8),
+                                  offset: Offset(-2, 2.0),
+                                  blurRadius: 8.0,
+                                ),
+                              ],
+                              color: Colors.white,
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold),
+                        ),
+                        onPressed: () {
+                          widget.qr.name = txt.text;
+                          widget.qr.save();
+                          Navigator.pop(context);
+                        },
+                        width: 120,
+                        color: Color.fromRGBO(102, 187, 106, 1),
+                      )
+                    ],
+                  ).show()
+            /*EmojiAlert(
                     background: widget.brightness == Brightness.dark
                         ? AppStyle.secondaryColorDark
                         : AppStyle.secondaryColorLight,
@@ -172,8 +311,10 @@ class _MenuBannerState extends State<MenuBanner> with TickerProviderStateMixin {
                       ],
                     ),
                     enableMainButton: true,
+                    cornerRadiusType: CORNER_RADIUS_TYPES.ALL_CORNERS,
                     enableSecondaryButton: true,
                     mainButtonColor: Colors.red,
+                    animationType: ANIMATION_TYPE.TRANSITION,
                     onMainButtonPressed: () {
                       widget.qr.name = txt.text;
                       widget.qr.save();
@@ -183,9 +324,9 @@ class _MenuBannerState extends State<MenuBanner> with TickerProviderStateMixin {
                       Navigator.pop(context);
                     },
                     cancelable: true,
-                    emojiType: EMOJI_TYPE.JOYFUL,
+                    emojiType: EMOJI_TYPE.SMILE,
                     height: height * .55,
-                  ).displayAlert(context)
+                  ).displayAlert(context)*/
           },
           child: ShakeAnimatedWidget(
             enabled: globals.enabled,
@@ -206,9 +347,7 @@ class _MenuBannerState extends State<MenuBanner> with TickerProviderStateMixin {
                             : AppStyle.secondaryColorLight,
                         boxShadow: [
                           BoxShadow(
-                            color: widget.brightness == Brightness.dark
-                                ? Colors.black.withOpacity(0.8)
-                                : Colors.black.withOpacity(0.8),
+                            color: Colors.black.withOpacity(0.8),
                             spreadRadius: 2,
                             blurRadius: 4,
                             offset: Offset(-5, 5), // changes position of shadow
@@ -238,6 +377,17 @@ class _MenuBannerState extends State<MenuBanner> with TickerProviderStateMixin {
                       child: Container(
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(10),
+                          boxShadow: [
+                            BoxShadow(
+                              color: widget.brightness == Brightness.dark
+                                  ? Colors.black.withOpacity(0.7)
+                                  : Colors.black.withOpacity(0.7),
+                              spreadRadius: 2,
+                              blurRadius: 8,
+                              offset:
+                                  Offset(-4, 3), // changes position of shadow
+                            )
+                          ],
                           color: Colors.white,
                           border: Border.all(
                             color: Colors.white,
@@ -263,6 +413,13 @@ class _MenuBannerState extends State<MenuBanner> with TickerProviderStateMixin {
                       Text(capitalize(widget.store.name),
                           style: TextStyle(
                               color: AppStyle.primaryColor,
+                              shadows: [
+                                Shadow(
+                                  color: Colors.black.withOpacity(0.8),
+                                  offset: Offset(-3, 4.0),
+                                  blurRadius: 5.0,
+                                ),
+                              ],
                               fontSize: 20,
                               fontWeight: FontWeight.w600))
                     ])

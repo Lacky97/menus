@@ -1,5 +1,3 @@
-import 'package:favicon/favicon.dart';
-
 class Store{
   final String name;
 
