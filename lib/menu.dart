@@ -1,3 +1,4 @@
+import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hive/hive.dart';
@@ -5,6 +6,7 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:menus/boxes.dart';
 import 'package:menus/drawer.dart';
 import 'package:menus/model/store.dart';
+import 'package:menus/utils/containerWrapper.dart';
 import 'package:menus/utils/qr_scanner.dart';
 import 'package:motion_toast/resources/arrays.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
@@ -69,10 +71,8 @@ class _MenuState extends State<Menu> {
               borderRadius: BorderRadius.circular(10),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.8),
-                  spreadRadius: 2,
-                  blurRadius: 5,
-                  offset: Offset(-5, 3), // changes position of shadow
+                  color: Color(0xFFDBEAFE),
+                  offset: Offset(-5, 3),
                 ),
               ],
             ),
@@ -86,41 +86,50 @@ class _MenuState extends State<Menu> {
             final qrs = box.values.toList().cast<Qrs>();
 
             return AnimationLimiter(
-              child: qrs.length == 0 ? Image.asset(
-                              'assets/click/Clicca_per_aggiungere_' + (widget.brightness  == Brightness.dark ? 'dark' : 'light') + '.png',
-                              height: 900.0,
-                              width: 900.0,
-                            ): GridView.builder(
-                gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-                  maxCrossAxisExtent: 200,
-                  childAspectRatio: 3 / 2,
-                  crossAxisSpacing: 15,
-                ),
-                padding: EdgeInsets.all(8),
-                itemCount: qrs.length,
-                itemBuilder: (BuildContext context, int index) {
-                  final qr = qrs[index];
-                  // ignore: unnecessary_statements
-                  toShow ? print('ciao da menu'): null;
-                  return AnimationConfiguration.staggeredList(
-                    position: index,
-                    duration: const Duration(milliseconds: 1500),
-                    child: SlideAnimation(
-                        verticalOffset: 50.0,
-                        child: FadeInAnimation(child: Hero(
-                          tag: 'bhoo'+index.toString(),
-                          child:_buildCard(qr, 'bhoo'+index.toString())))),
-                  );
-                },
-              ),
+              child: qrs.length == 0
+                  ? Image.asset(
+                      'assets/click/Clicca_per_aggiungere_' +
+                          (widget.brightness == Brightness.dark
+                              ? 'dark'
+                              : 'light') +
+                          '.png',
+                      height: 900.0,
+                      width: 900.0,
+                    )
+                  : GridView.builder(
+                      gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+                        maxCrossAxisExtent: 200,
+                        childAspectRatio: 3 / 2,
+                        crossAxisSpacing: 15,
+                      ),
+                      padding: EdgeInsets.all(8),
+                      itemCount: qrs.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        final qr = qrs[index];
+                        // ignore: unnecessary_statements
+                        toShow ? print('ciao da menu') : null;
+                        return AnimationConfiguration.staggeredList(
+                          position: index,
+                          duration: const Duration(milliseconds: 1500),
+                          child: SlideAnimation(
+                              verticalOffset: 50.0,
+                              child: FadeInAnimation(
+                                  child: Hero(
+                                      tag: 'bhoo' + index.toString(),
+                                      child: _buildCard(
+                                          qr, 'bhoo' + index.toString())))),
+                        );
+                      },
+                    ),
             );
           }),
       floatingActionButton: FloatingActionButton(
-        
+        elevation: 20,
         onPressed: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => QRScanner(boxes: Boxes.getQrs())),
+            MaterialPageRoute(
+                builder: (context) => QRScanner(boxes: Boxes.getQrs())),
           );
         },
         foregroundColor: Colors.white,
@@ -133,11 +142,26 @@ class _MenuState extends State<Menu> {
     );
   }
 
+  ContainerTransitionType _transitionType = ContainerTransitionType.fade;
+  void _showMarkedAsDoneSnackbar(bool? isMarkedAsDone) {
+    if (isMarkedAsDone ?? false)
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text('Marked as done!'),
+      ));
+  }
+
   Widget _buildCard(qr, index) {
-    return MenuBanner(
-        store: Store(qr.name, qr.url, qr.imageUrl),
-        brightness: widget.brightness,
-        qr: qr,
-        index: index);
+    return OpenContainerWrapper(
+      transitionType: _transitionType,
+      closedBuilder: (BuildContext _, VoidCallback openContainer) {
+        return MenuBanner(
+            openContainer: openContainer,
+            store: Store(qr.name, qr.url, qr.imageUrl),
+            brightness: widget.brightness,
+            qr: qr,
+            index: index);
+      },
+      onClosed: _showMarkedAsDoneSnackbar,
+    );
   }
 }

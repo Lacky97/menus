@@ -25,4 +25,3 @@ void main() async {
   runApp(HomePage());
   //runApp(DevicePreview(builder: (context) => HomePage(), enabled: !kReleaseMode,));
 }
-
