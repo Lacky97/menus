@@ -46,6 +46,7 @@ dependencies:
   rflutter_alert: ^2.0.4
   device_preview: ^0.7.4
   animations: ^2.0.1
+  flutter_animated_dialog: ^2.0.1
 
 
 

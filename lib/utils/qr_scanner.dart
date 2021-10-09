@@ -90,7 +90,10 @@ class _QRScannerState extends State<QRScanner> {
 
   Future addQR(String siteName, String url) async {
     var iconUrl = await Favicon.getBest(url.toString());
-   
+    
+    if(iconUrl == null || iconUrl.url == null) {
+      iconUrl = await Favicon.getBest('https://www.haiku-restaurant.it/templates/yootheme/cache/logo-HAIKU-c0f521b1.webp');
+    }
     widget.boxes.values.forEach((element) {
       print(element.name);
       print(siteName);
@@ -103,9 +106,10 @@ class _QRScannerState extends State<QRScanner> {
     if (!areEqual) {
       print('ci sono pure io ');
       print(iconUrl!.url.toString());
-      final qr = Qrs()..name = siteName
-      ..url = url
-      ..imageUrl = iconUrl.url.toString();
+      final qr = Qrs()
+        ..name = siteName
+        ..url = url
+        ..imageUrl = iconUrl.url.toString();
 
       final box = Boxes.getQrs();
       box.add(qr);
@@ -123,12 +127,7 @@ class _QRScannerState extends State<QRScanner> {
   Widget buildResult() {
     // ignore: unnecessary_statements
     barcode != null ? _getNameSite(Uri.parse(barcode!.code)) : null;
-    return Container(
-        padding: EdgeInsets.all(12),
-        decoration: BoxDecoration(color: Colors.white),
-        child: Text(
-            barcode != null ? 'Result : ${barcode!.code}' : 'Scan code!',
-            maxLines: 3));
+    return Container();
   }
 
   Widget buildQrView(BuildContext context) {

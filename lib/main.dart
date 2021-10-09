@@ -20,6 +20,7 @@ void main() async {
     SystemUiOverlayStyle(
       statusBarColor: Colors.transparent, //top bar color
       statusBarIconBrightness: Brightness.light, // don't use this
+      systemNavigationBarColor: Colors.black.withOpacity(0.1),
     ),
   );
   runApp(HomePage());

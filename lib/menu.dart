@@ -1,4 +1,3 @@
-import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hive/hive.dart';
@@ -6,7 +5,6 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:menus/boxes.dart';
 import 'package:menus/drawer.dart';
 import 'package:menus/model/store.dart';
-import 'package:menus/utils/containerWrapper.dart';
 import 'package:menus/utils/qr_scanner.dart';
 import 'package:motion_toast/resources/arrays.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
@@ -59,26 +57,23 @@ class _MenuState extends State<Menu> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: widget.brightness == Brightness.dark ? Color(0xff171717) : Color(0xffF9FAFB),//Color(0xffF5F5F4),//Color(0xffD1D5DB),//Color(0xffEEF2FF),
       endDrawer: NavigatorDrawer(brightness: widget.brightness),
       appBar: AppBar(
-        backgroundColor: Colors.transparent,
         elevation: 0,
+        backgroundColor: Colors.transparent,
         title: Container(
             decoration: BoxDecoration(
               color: widget.brightness == Brightness.dark
                   ? AppStyle.thirdColorDark
                   : AppStyle.thirdColorLight,
               borderRadius: BorderRadius.circular(10),
-              boxShadow: [
-                BoxShadow(
-                  color: Color(0xFFDBEAFE),
-                  offset: Offset(-5, 3),
-                ),
-              ],
+              
             ),
             child: Padding(
                 padding: EdgeInsets.all(8.0),
                 child: Text("Menus", style: TextStyle(color: Colors.white)))),
+            iconTheme: IconThemeData(color: widget.brightness == Brightness.dark ? Colors.white : Colors.black ),
       ),
       body: ValueListenableBuilder<Box<Qrs>>(
           valueListenable: Boxes.getQrs().listenable(),
@@ -98,11 +93,12 @@ class _MenuState extends State<Menu> {
                     )
                   : GridView.builder(
                       gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-                        maxCrossAxisExtent: 200,
-                        childAspectRatio: 3 / 2,
-                        crossAxisSpacing: 15,
+                        maxCrossAxisExtent: 180,
+                        childAspectRatio: 1.2,
+                        crossAxisSpacing: 5,
+                        mainAxisSpacing: 10
                       ),
-                      padding: EdgeInsets.all(8),
+                      padding: EdgeInsets.all(22),
                       itemCount: qrs.length,
                       itemBuilder: (BuildContext context, int index) {
                         final qr = qrs[index];
@@ -142,26 +138,12 @@ class _MenuState extends State<Menu> {
     );
   }
 
-  ContainerTransitionType _transitionType = ContainerTransitionType.fade;
-  void _showMarkedAsDoneSnackbar(bool? isMarkedAsDone) {
-    if (isMarkedAsDone ?? false)
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        content: Text('Marked as done!'),
-      ));
-  }
 
   Widget _buildCard(qr, index) {
-    return OpenContainerWrapper(
-      transitionType: _transitionType,
-      closedBuilder: (BuildContext _, VoidCallback openContainer) {
-        return MenuBanner(
-            openContainer: openContainer,
-            store: Store(qr.name, qr.url, qr.imageUrl),
-            brightness: widget.brightness,
-            qr: qr,
-            index: index);
-      },
-      onClosed: _showMarkedAsDoneSnackbar,
-    );
+    return MenuBanner(
+        store: Store(qr.name, qr.url, qr.imageUrl),
+        brightness: widget.brightness,
+        qr: qr,
+        index: index);
   }
 }
