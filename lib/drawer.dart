@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:menus/constant/app_style.dart';
 import 'package:menus/themebuilder.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 // ignore: must_be_immutable
 class NavigatorDrawer extends StatefulWidget {
@@ -28,16 +29,29 @@ class _NavigatorDrawerState extends State<NavigatorDrawer> {
             children: <Widget>[
               const SizedBox(height: 50),
               buildMenuItem(
-                text: 'People',
-                icon: Icons.people,
+                text: 'Cambia tema',
+                icon: Icons.wb_sunny_outlined,
               ),
-              buildRemoveItem(
+              buildFeedback(
+                text: 'Dammi un consiglio!',
+                icon: Icons.message_outlined,
+              ),
+
+              /*buildRemoveItem(
                 text: 'Remove Elements',
                 icon: Icons.remove,
-              ),
+              ),*/
             ],
           )),
     );
+  }
+
+  _launch(url) async {
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    }
   }
 
   Widget buildRemoveItem({
@@ -56,6 +70,22 @@ class _NavigatorDrawerState extends State<NavigatorDrawer> {
             });
   }
 
+  Widget buildFeedback({
+    required String text,
+    required IconData icon,
+  }) {
+    final color = Colors.white;
+    final hoverColor = Colors.white70;
+
+    return ListTile(
+        leading: Icon(icon, color: color),
+        title: Text(text, style: TextStyle(color: color)),
+        hoverColor: hoverColor,
+        onTap: () => {
+              _launch('https://1lbwruq8s34.typeform.com/to/ubU5ErwT'),
+            });
+  }
+
   Widget buildMenuItem({
     required String text,
     required IconData icon,
@@ -68,12 +98,12 @@ class _NavigatorDrawerState extends State<NavigatorDrawer> {
         title: Text(text, style: TextStyle(color: color)),
         hoverColor: hoverColor,
         onTap: () => {
-
-              print(widget.brightness.toString()),
               SystemChrome.setSystemUIOverlayStyle(
                 SystemUiOverlayStyle(
-                  systemNavigationBarColor: widget.brightness == Brightness.dark ?  Colors.black.withOpacity(0.1) : Colors.black
-                ),
+                    systemNavigationBarColor:
+                        widget.brightness == Brightness.dark
+                            ? Colors.black.withOpacity(0.1)
+                            : Colors.black),
               ),
               ThemeBuilder.of(context)!.changeTheme(),
               Navigator.of(context).pop(),

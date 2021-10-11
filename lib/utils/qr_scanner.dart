@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:math';
 
 import 'package:favicon/favicon.dart';
 import 'package:flutter/foundation.dart';
@@ -67,7 +68,6 @@ class _QRScannerState extends State<QRScanner> {
   }
 
   _launch(url) async {
-    print(oneTime);
     if (oneTime) {
       setState(() {
         oneTime = false;
@@ -91,9 +91,6 @@ class _QRScannerState extends State<QRScanner> {
   Future addQR(String siteName, String url) async {
     var iconUrl = await Favicon.getBest(url.toString());
     
-    if(iconUrl == null || iconUrl.url == null) {
-      iconUrl = await Favicon.getBest('https://www.haiku-restaurant.it/templates/yootheme/cache/logo-HAIKU-c0f521b1.webp');
-    }
     widget.boxes.values.forEach((element) {
       print(element.name);
       print(siteName);
@@ -104,12 +101,13 @@ class _QRScannerState extends State<QRScanner> {
         });
     });
     if (!areEqual) {
-      print('ci sono pure io ');
-      print(iconUrl!.url.toString());
+
       final qr = Qrs()
         ..name = siteName
         ..url = url
-        ..imageUrl = iconUrl.url.toString();
+        ..imageUrl = iconUrl == null ? '' : iconUrl.url.toString()
+        ..randomColor = iconUrl == null ? Colors.primaries[Random().nextInt(Colors.primaries.length)].value.toString() : '000000'  
+        ..category = 'Resturant/Bar';
 
       final box = Boxes.getQrs();
       box.add(qr);

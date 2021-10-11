@@ -1,4 +1,3 @@
-
 import 'package:hive/hive.dart';
 
 part 'qrs.g.dart';
@@ -15,4 +14,11 @@ class Qrs extends HiveObject{
   @HiveField(2)
   late String imageUrl;
 
+  @HiveField(3)
+  late String randomColor;
+
+  @HiveField(4)
+  late String category;
+
 }
+

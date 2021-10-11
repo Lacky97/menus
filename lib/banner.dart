@@ -1,6 +1,7 @@
+import 'dart:math';
+
 import 'package:animated_widgets/widgets/rotation_animated.dart';
 import 'package:animated_widgets/widgets/shake_animated_widget.dart';
-import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
 import 'package:menus/constant/app_style.dart';
 import 'package:menus/menu.dart';
@@ -117,7 +118,7 @@ class _MenuBannerState extends State<MenuBanner> with TickerProviderStateMixin {
               })
             },
             onTap: () => {
-              globals.delete
+              !globals.delete
                   ? _launch(widget.store.url)
                   : showAnimatedDialog(
                       context: context,
@@ -154,7 +155,7 @@ class _MenuBannerState extends State<MenuBanner> with TickerProviderStateMixin {
                                         child: ClipRRect(
                                           borderRadius:
                                               BorderRadius.circular(10.0),
-                                          child: Image.network(
+                                          child: widget.store.imageUrl == '' ? Icon(Icons.auto_awesome):Image.network(
                                             widget.store.imageUrl,
                                             height: 80,
                                             width: 80,
@@ -254,7 +255,7 @@ class _MenuBannerState extends State<MenuBanner> with TickerProviderStateMixin {
                           child: Container(
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(10),
-                              color: Colors.white,
+                              color: widget.store.imageUrl == '' ? Color(int.parse(widget.qr.randomColor)) : Colors.white ,
                               border: Border.all(
                                 color: Colors.white,
                                 width: 4,
@@ -263,7 +264,7 @@ class _MenuBannerState extends State<MenuBanner> with TickerProviderStateMixin {
                             child: ClipRRect(
                                           borderRadius:
                                               BorderRadius.circular(10.0),
-                                          child: Image.network(
+                                          child: widget.store.imageUrl == '' ? Image(image: AssetImage('assets/logo/logo.png'), height: 50, width: 50) : Image.network(
                                             widget.store.imageUrl,
                                             height: 50,
                                             width: 50,
@@ -346,370 +347,3 @@ class _MenuBannerState extends State<MenuBanner> with TickerProviderStateMixin {
     );
   }
 }
-
-
-/* 
-
-
-  @override
-  Widget build(BuildContext context) {
-    var height = MediaQuery.of(context).size.height;
-    var width = MediaQuery.of(context).size.width;
-    return Container(
-      child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: AppStyle.padding),
-          child: GestureDetector(
-            onLongPress: () => {
-              controller.forward(from: 0.0),
-              Menu.of(context)!.notShow(),
-              setState(() {
-                globals.enabled = !globals.enabled;
-                globals.delete = !globals.delete;
-              })
-            },
-            onTap: () => {
-              globals.delete
-                  ? _launch(widget.store.url)
-                  : showAnimatedDialog(
-                      context: context,
-                      barrierDismissible: true,
-                      builder: (BuildContext context) {
-                        return AlertDialog(
-                            contentPadding: EdgeInsets.zero,
-                            backgroundColor: Colors.transparent,
-                            content: Container(
-                              height: height * 0.4,
-                              decoration: BoxDecoration(
-                                  color: widget.brightness == Brightness.dark
-                                      ? AppStyle.secondaryColorDark
-                                      : AppStyle.secondaryColorLight,
-                                  borderRadius: BorderRadius.only(
-                                    topRight: Radius.circular(15),
-                                    topLeft: Radius.circular(15),
-                                    bottomLeft: Radius.circular(15),
-                                    bottomRight: Radius.circular(15),
-                                  )),
-                              child: Padding(
-                                  padding: EdgeInsets.fromLTRB(width * .1,
-                                      height * .05, width * .1, height * .05),
-                                  child: Column(children: [
-                                    Align(
-                                      alignment: Alignment.centerLeft,
-                                      child: Container(
-                                        decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(10),
-                                          color: Colors.white,
-                                          border: Border.all(
-                                            color: Colors.white,
-                                            width: 4,
-                                          ),
-                                        ),
-                                        child: Image.network(
-                                          widget.store.imageUrl,
-                                          width: 60.0,
-                                          height: 60.0,
-                                        ),
-                                      ),
-                                    ),
-                                    SizedBox(height: 30),
-                                    Container(
-                                        width: width * .7,
-                                        child: TextField(
-                                          style: TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 25),
-                                          controller: txt,
-                                          decoration: InputDecoration(
-                                            contentPadding: EdgeInsets.all(3.0),
-                                            isDense: true,
-                                            enabledBorder: UnderlineInputBorder(
-                                              borderSide: BorderSide(
-                                                  color: Colors.white),
-                                            ),
-                                          ),
-                                        )),
-                                    SizedBox(height: 20),
-                                    Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: <Widget>[
-                                          SpringButton(
-                                              SpringButtonType.OnlyScale,
-                                              row("Cancel", Colors.red.shade400,
-                                                  width * 0.24),
-                                              onTap: () =>
-                                                  {Navigator.pop(context)}),
-                                          SpringButton(
-                                            SpringButtonType.OnlyScale,
-                                            row("Save", Colors.green.shade400,
-                                                width * 0.24),
-                                            onTap: () => {
-                                              print(txt.text),
-                                              widget.qr.name = txt.text,
-                                              widget.qr.save(),
-                                              Navigator.pop(context),
-                                            },
-                                          ),
-                                        ])
-                                  ])),
-                            ));
-                      },
-                      animationType: DialogTransitionType.slideFromBottom,
-                      curve: Curves.fastOutSlowIn,
-                      duration: Duration(seconds: 1),
-                    )
-            },
-            child: ShakeAnimatedWidget(
-              enabled: globals.enabled,
-              duration: Duration(milliseconds: 300),
-              shakeAngle: Rotation.deg(z: 2),
-              curve: Curves.linear,
-              child: Stack(children: [
-                Positioned(
-                    top: 15,
-                    left: 0,
-                    right: 0,
-                    child: Material(
-                      borderRadius: BorderRadius.circular(10),
-                      elevation: 10,
-                      child: Container(
-                        height: 100,
-                        decoration: BoxDecoration(
-                            color: widget.brightness == Brightness.dark
-                                ? AppStyle.secondaryColorDark
-                                : AppStyle.secondaryColorLight,
-                            
-                            borderRadius: BorderRadius.circular(15)),
-                      ),
-                    )),
-                Positioned(
-                  top: 25,
-                  left: 15,
-                  right: 0,
-                  child: Row(children: [
-                    Material(
-                      borderRadius: BorderRadius.circular(10),
-                      
-                      child: Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10),
-                            color: Colors.white,
-                            border: Border.all(
-                              color: Colors.white,
-                              width: 4,
-                            ),
-                          ),
-                          child: Image.network(
-                            widget.store.imageUrl,
-                            width: 40.0,
-                            height: 40.0,
-                          ),
-                        ),
-                      ),
-                    
-                  ]),
-                ),
-                Positioned(
-                    top: 80,
-                    left: 15,
-                    right: 0,
-                    child: Row(children: [
-                      Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            SizedBox(height: 20),
-                            Text(capitalize(widget.store.name),
-                                style: TextStyle(
-                                    color: AppStyle.textColorLight,
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.w700))
-                          ])
-                    ])),
-                globals.delete
-                    ? Positioned(
-                        top: 0,
-                        left: 140,
-                        right: 0,
-                        child: GestureDetector(
-                          onTap: () => {
-                            deleteQr(),
-                          },
-                          child: Container(
-                            height: 30,
-                            child: Transform.rotate(
-                                angle: -math.pi / 4,
-                                child: CircleAvatar(
-                                  backgroundColor: Colors.red,
-                                  foregroundColor: Colors.white,
-                                  radius: 30,
-                                  child: Icon(Icons.add),
-                                )),
-                          ),
-                        ),
-                      )
-                    : SizedBox(),
-              ]),
-            ),
-          )),
-    );
-  }
-
-*/
-
-// for animation container with animation when color change use:
-// AnimatedContainer(duration: Duration(seconds: 1),
-
-/* showFloatingModalBottomSheet(
-                              context: context,
-                    builder: (BuildContext context) => SingleChildScrollView(
-                            child: Container(
-                          height: height * 0.55,
-                          decoration: BoxDecoration(
-                              color: widget.brightness == Brightness.dark
-                                  ? AppStyle.secondaryColorDark
-                                  : AppStyle.secondaryColorLight,
-                              borderRadius: BorderRadius.only(
-                                topRight: Radius.circular(30),
-                                topLeft: Radius.circular(30),
-                              )),
-                          child: Padding(
-                              padding: EdgeInsets.fromLTRB(width * .15,
-                                  height * .05, width * .15, height * .05),
-                              child: Column(children: [
-                                Align(
-                                  alignment: Alignment.centerLeft,
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(10),
-                                      color: Colors.white,
-                                      border: Border.all(
-                                        color: Colors.white,
-                                        width: 4,
-                                      ),
-                                    ),
-                                    child: Image.network(
-                                      widget.store.imageUrl,
-                                      width: 60.0,
-                                      height: 60.0,
-                                    ),
-                                  ),
-                                ),
-                                SizedBox(height: 30),
-                                Container(
-                                    width: width * .7,
-                                    child: TextField(
-                                      style: TextStyle(
-                                          color: Colors.white, fontSize: 25),
-                                      controller: txt,
-                                      decoration: InputDecoration(
-                                        contentPadding: EdgeInsets.all(3.0),
-                                        isDense: true,
-                                        enabledBorder: UnderlineInputBorder(
-                                          borderSide:
-                                              BorderSide(color: Colors.white),
-                                        ),
-                                      ),
-                                    )),
-                                SizedBox(height: 20),
-                                SpringButton(
-                                  SpringButtonType.OnlyScale,
-                                  row(
-                                    "Save",
-                                    Colors.green.shade400,
-                                  ),
-                                  onTap: () => {
-                                    print(txt.text),
-                                    widget.qr.name = txt.text,
-                                    widget.qr.save(),
-                                    Navigator.pop(context),
-                                    },
-                                ),
-                                SpringButton(
-                                  SpringButtonType.OnlyScale,
-                                  row(
-                                    "Cancel",
-                                    Colors.red.shade400,
-                                  ),
-                                  onTap: () => {Navigator.pop(context)}
-                                ),
-                              ]) //widget.store.name,
-
-                              ),
-                        ))) */
-
-/*  Alert(
-      alertAnimation: ,
-        style: AlertStyle(
-          backgroundColor: widget.brightness == Brightness.dark
-              ? AppStyle.secondaryColorDark
-              : AppStyle.secondaryColorLight,
-          overlayColor: Colors.black54,
-          isCloseButton: false,
-          isOverlayTapDismiss: true,
-          titleStyle: TextStyle(
-              shadows: [
-                Shadow(
-                  color: Color(0xFFDBEAFE),
-                  offset: Offset(-5, 5),
-                  blurRadius: 8.0,
-                ),
-              ],
-              fontSize: 25,
-              fontWeight: FontWeight.bold,
-              color: Colors.white),
-          animationDuration: Duration(milliseconds: 400),
-            alertBorder: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(15.0),
-            ),
-            alertAlignment: Alignment.center,
-          ),
-          context: context,
-          content: 
-          buttons: [
-            DialogButton(
-              splashColor: Colors.red.shade400,
-              child: Text(
-                "Cancel",
-                style: TextStyle(
-                    shadows: [
-                      Shadow(
-                        color: Color(0xFFDBEAFE),
-                        offset: Offset(-5, 5),
-                        blurRadius: 8.0,
-                      ),
-                    ],
-                    color: Colors.white,
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold),
-              ),
-              onPressed: () => Navigator.pop(context),
-              width: 120,
-              color: Color.fromRGBO(239, 83, 80, 1),
-            ),
-            DialogButton(
-              child: Text(
-                "Save",
-                style: TextStyle(
-                    shadows: [
-                      Shadow(
-                        color: Color(0xFFDBEAFE),
-                        offset: Offset(-5, 5),
-                        blurRadius: 8.0,
-                    ),
-                  ],
-                  color: Colors.white,
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold),
-            ),
-            onPressed: () {
-              widget.qr.name = txt.text;
-              widget.qr.save();
-              Navigator.pop(context);
-            },
-            width: 120,
-            color: Color.fromRGBO(102, 187, 106, 1),
-          )
-        ],
-      ).show()*/
-

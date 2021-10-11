@@ -19,19 +19,25 @@ class QrsAdapter extends TypeAdapter<Qrs> {
     return Qrs()
       ..name = fields[0] as String
       ..url = fields[1] as String
-      ..imageUrl = fields[2] as String;
+      ..imageUrl = fields[2] as String
+      ..randomColor = fields[3] as String
+      ..category = fields[4] as String;
   }
 
   @override
   void write(BinaryWriter writer, Qrs obj) {
     writer
-      ..writeByte(3)
+      ..writeByte(5)
       ..writeByte(0)
       ..write(obj.name)
       ..writeByte(1)
       ..write(obj.url)
       ..writeByte(2)
-      ..write(obj.imageUrl);
+      ..write(obj.imageUrl)
+      ..writeByte(3)
+      ..write(obj.randomColor)
+      ..writeByte(4)
+      ..write(obj.category);
   }
 
   @override

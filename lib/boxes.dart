@@ -4,5 +4,5 @@ import 'model/qrs.dart';
 
 class Boxes {
   static Box<Qrs> getQrs() => 
-      Hive.box<Qrs>('qr4');
+      Hive.box<Qrs>('qr12');
 }
