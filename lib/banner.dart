@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:animated_widgets/widgets/rotation_animated.dart';
 import 'package:animated_widgets/widgets/shake_animated_widget.dart';
 import 'package:flutter/material.dart';
@@ -11,6 +9,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'dart:math' as math;
 import 'model/qrs.dart';
 import 'model/store.dart';
+import 'package:select_form_field/select_form_field.dart';
 import 'utils/globals.dart' as globals;
 
 // ignore: must_be_immutable
@@ -38,12 +37,81 @@ class _MenuBannerState extends State<MenuBanner> with TickerProviderStateMixin {
   final TextEditingController textController = TextEditingController();
   late AnimationController controller;
   var txt = TextEditingController();
+  var type = TextEditingController();
+
+  final List<Map<String, dynamic>> _items = [
+    {
+      'value': 'Sushi',
+      'label': 'Sushi',
+      'icon': Image(
+          image: AssetImage('assets/icons/sushi.png'), height: 30, width: 30),
+      'textStyle': TextStyle(fontWeight: FontWeight.w600, color: Colors.black),
+    },
+    {
+      'value': 'FastFood',
+      'label': 'FastFood',
+      'icon': Image(
+          image: AssetImage('assets/icons/hamburguer.png'),
+          height: 30,
+          width: 30),
+      'textStyle': TextStyle(fontWeight: FontWeight.w600, color: Colors.black),
+    },
+    {
+      'value': 'Bar',
+      'label': 'Bar',
+      'icon': Image(
+          image: AssetImage('assets/icons/pancakes.png'),
+          height: 30,
+          width: 30),
+      'textStyle': TextStyle(fontWeight: FontWeight.w600, color: Colors.black),
+    },
+    {
+      'value': 'Pub',
+      'label': 'Pub',
+      'icon': Image(
+          image: AssetImage('assets/icons/pint.png'), height: 30, width: 30),
+      'textStyle': TextStyle(fontWeight: FontWeight.w600, color: Colors.black),
+    },
+    {
+      'value': 'Gelateria',
+      'label': 'Gelateria',
+      'icon': Image(
+          image: AssetImage('assets/icons/ice-cream.png'),
+          height: 30,
+          width: 30),
+      'textStyle': TextStyle(fontWeight: FontWeight.w600, color: Colors.black),
+    },
+    {
+      'value': 'Pizzeria',
+      'label': 'Pizzeria',
+      'icon': Image(
+          image: AssetImage('assets/icons/pizza.png'), height: 30, width: 30),
+      'textStyle': TextStyle(fontWeight: FontWeight.w600, color: Colors.black),
+    },
+    {
+      'value': 'Steakhouse',
+      'label': 'Steakhouse',
+      'icon': Image(
+          image: AssetImage('assets/icons/steak.png'), height: 30, width: 30),
+      'textStyle': TextStyle(fontWeight: FontWeight.w600, color: Colors.black),
+    },
+    {
+      'value': 'Other',
+      'label': 'Other',
+      'icon': Image(
+          image: AssetImage('assets/icons/menus.png'), height: 30, width: 30),
+      'textStyle': TextStyle(fontWeight: FontWeight.w600, color: Colors.black),
+    },
+  ];
 
   @override
   void initState() {
     controller = AnimationController(
         duration: const Duration(milliseconds: 500), vsync: this);
     txt.text = capitalize(widget.store.name);
+    txt.selection =
+        TextSelection.fromPosition(TextPosition(offset: txt.text.length));
+    type.text = widget.qr.category;
     super.initState();
   }
 
@@ -95,8 +163,8 @@ class _MenuBannerState extends State<MenuBanner> with TickerProviderStateMixin {
   }
 
   String maxThirteen(String myString) {
-    if (myString.length > 13) {
-      myString = myString.substring(0, 10) + '...';
+    if (myString.length > 14) {
+      myString = myString.substring(0, 11) + '...';
     }
     return myString;
   }
@@ -128,7 +196,7 @@ class _MenuBannerState extends State<MenuBanner> with TickerProviderStateMixin {
                             contentPadding: EdgeInsets.zero,
                             backgroundColor: Colors.transparent,
                             content: Container(
-                              height: height * 0.43,
+                              height: height * 0.51,
                               decoration: BoxDecoration(
                                   color: widget.brightness == Brightness.dark
                                       ? AppStyle.secondaryColorDark
@@ -145,8 +213,11 @@ class _MenuBannerState extends State<MenuBanner> with TickerProviderStateMixin {
                                       child: Container(
                                         decoration: BoxDecoration(
                                           borderRadius:
-                                              BorderRadius.circular(15),
-                                          color: Colors.white,
+                                              BorderRadius.circular(10),
+                                          color: widget.store.imageUrl == ''
+                                              ? Color(int.parse(
+                                                  widget.qr.randomColor))
+                                              : Colors.white,
                                           border: Border.all(
                                             color: Colors.white,
                                             width: 4,
@@ -155,19 +226,32 @@ class _MenuBannerState extends State<MenuBanner> with TickerProviderStateMixin {
                                         child: ClipRRect(
                                           borderRadius:
                                               BorderRadius.circular(10.0),
-                                          child: widget.store.imageUrl == '' ? Icon(Icons.auto_awesome):Image.network(
-                                            widget.store.imageUrl,
-                                            height: 80,
-                                            width: 80,
-                                            fit: BoxFit.cover,
-                                          ),
+                                          child: widget.store.imageUrl == ''
+                                              ? Image(
+                                                  image: AssetImage(
+                                                      'assets/logo/logo.png'),
+                                                  height: 80,
+                                                  width: 80)
+                                              : Image.network(
+                                                  widget.store.imageUrl,
+                                                  height: 80,
+                                                  width: 80,
+                                                  fit: BoxFit.cover,
+                                                ),
                                         ),
                                       ),
                                     ),
                                     SizedBox(height: 30),
                                     Container(
-                                        width: width * .4,
+                                        width: width * .545,
                                         child: TextField(
+                                          onTap: () => {
+                                            txt.selection =
+                                                TextSelection.fromPosition(
+                                                    TextPosition(
+                                                        offset:
+                                                            txt.text.length)),
+                                          },
                                           textAlign: TextAlign.center,
                                           style: TextStyle(
                                               color: widget.brightness ==
@@ -178,16 +262,38 @@ class _MenuBannerState extends State<MenuBanner> with TickerProviderStateMixin {
                                               fontWeight: FontWeight.w600),
                                           controller: txt,
                                           decoration: InputDecoration(
-                                            contentPadding: EdgeInsets.all(3.0),
-                                            isDense: true,
-                                            enabledBorder: UnderlineInputBorder(
-                                              borderSide: BorderSide(
-                                                  color: widget.brightness ==
-                                                          Brightness.dark
-                                                      ? Colors.white70
-                                                      : Colors.black87),
-                                            ),
-                                          ),
+                                              contentPadding:
+                                                  EdgeInsets.all(3.0),
+                                              isDense: true,
+                                              focusedBorder:
+                                                  UnderlineInputBorder(
+                                                      borderSide: BorderSide(
+                                                color: widget.brightness ==
+                                                        Brightness.dark
+                                                    ? Colors.white
+                                                    : Colors.black,
+                                              ))),
+                                        )),
+                                    SizedBox(height: 20),
+                                    Container(
+                                        width: width * .545,
+                                        child: SelectFormField(
+                                          brightness: widget.brightness,
+                                          controller: type,
+                                          scrollPhysics:
+                                              const BouncingScrollPhysics(),
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                              color: widget.brightness ==
+                                                      Brightness.dark
+                                                  ? Colors.white
+                                                  : Colors.black,
+                                              fontSize: 25,
+                                              fontWeight: FontWeight.w600),
+                                          type: SelectFormFieldType.dropdown,
+                                          items: _items,
+                                          onChanged: (val) => {type.text = val},
+                                          onSaved: (val) => print(val),
                                         )),
                                     SizedBox(height: 20),
                                     Row(
@@ -205,8 +311,8 @@ class _MenuBannerState extends State<MenuBanner> with TickerProviderStateMixin {
                                             row("Save", Color(0xff059669),
                                                 width * 0.24),
                                             onTap: () => {
-                                              print(txt.text),
                                               widget.qr.name = txt.text,
+                                              widget.qr.category = type.text,
                                               widget.qr.save(),
                                               Navigator.pop(context),
                                             },
@@ -255,22 +361,28 @@ class _MenuBannerState extends State<MenuBanner> with TickerProviderStateMixin {
                           child: Container(
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(10),
-                              color: widget.store.imageUrl == '' ? Color(int.parse(widget.qr.randomColor)) : Colors.white ,
+                              color: widget.store.imageUrl == ''
+                                  ? Color(int.parse(widget.qr.randomColor))
+                                  : Colors.white,
                               border: Border.all(
                                 color: Colors.white,
                                 width: 4,
                               ),
                             ),
                             child: ClipRRect(
-                                          borderRadius:
-                                              BorderRadius.circular(10.0),
-                                          child: widget.store.imageUrl == '' ? Image(image: AssetImage('assets/logo/logo.png'), height: 50, width: 50) : Image.network(
-                                            widget.store.imageUrl,
-                                            height: 50,
-                                            width: 50,
-                                            fit: BoxFit.cover,
-                                          ),
-                                        ),
+                              borderRadius: BorderRadius.circular(10.0),
+                              child: widget.store.imageUrl == ''
+                                  ? Image(
+                                      image: AssetImage('assets/logo/logo.png'),
+                                      height: 50,
+                                      width: 50)
+                                  : Image.network(
+                                      widget.store.imageUrl,
+                                      height: 50,
+                                      width: 50,
+                                      fit: BoxFit.cover,
+                                    ),
+                            ),
                           ),
                         ),
                       ]),
@@ -307,7 +419,7 @@ class _MenuBannerState extends State<MenuBanner> with TickerProviderStateMixin {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 SizedBox(height: 20),
-                                Text('Resturant/Bar',
+                                Text(widget.qr.category,
                                     style: TextStyle(
                                         color:
                                             widget.brightness == Brightness.dark
