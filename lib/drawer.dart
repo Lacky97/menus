@@ -20,6 +20,7 @@ class _NavigatorDrawerState extends State<NavigatorDrawer> {
 
   @override
   Widget build(BuildContext context) {
+    var height = MediaQuery.of(context).size.height;
     return Drawer(
       child: Material(
           color: widget.brightness == Brightness.dark
@@ -33,6 +34,7 @@ class _NavigatorDrawerState extends State<NavigatorDrawer> {
                 text: 'Cambia tema',
                 icon: Icons.wb_sunny_outlined,
               ),
+              SizedBox(height: height*0.6),
               buildFeedback(
                 text: 'Dammi un consiglio!',
                 icon: Icons.message_outlined,
@@ -40,6 +42,10 @@ class _NavigatorDrawerState extends State<NavigatorDrawer> {
               buildCopyright(
                 text: 'Copyright',
                 icon: Icons.copyright,
+              ),
+              buildNorme(
+                text: 'Norme sulla privacy',
+                icon: Icons.privacy_tip_outlined ,
               ),
 
               /*buildRemoveItem(
@@ -59,6 +65,23 @@ class _NavigatorDrawerState extends State<NavigatorDrawer> {
     }
   }
 
+    Widget buildNorme({
+    required String text,
+    required IconData icon,
+  }) {
+    final color = Colors.white;
+    final hoverColor = Colors.white70;
+
+    return ListTile(
+        leading: Icon(icon, color: color),
+        title: Text(text, style: TextStyle(color: color)),
+        hoverColor: hoverColor,
+        onTap: () => {
+          _launch('https://www.termsfeed.com/live/bd54490b-6d47-4fc2-81c2-5939446a4752'),
+              Navigator.of(context).pop(),
+            });
+  }
+
   Widget buildRemoveItem({
     required String text,
     required IconData icon,
@@ -71,6 +94,7 @@ class _NavigatorDrawerState extends State<NavigatorDrawer> {
         title: Text(text, style: TextStyle(color: color)),
         hoverColor: hoverColor,
         onTap: () => {
+          
               Navigator.of(context).pop(),
             });
   }
@@ -169,6 +193,7 @@ class _NavigatorDrawerState extends State<NavigatorDrawer> {
         hoverColor: hoverColor,
         onTap: () => {
               _launch('https://1lbwruq8s34.typeform.com/to/ubU5ErwT'),
+              Navigator.of(context).pop(),
             });
   }
 

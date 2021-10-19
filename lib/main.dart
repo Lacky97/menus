@@ -1,3 +1,5 @@
+import 'package:device_preview/device_preview.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -24,6 +26,6 @@ void main() async {
       systemNavigationBarColor: color == 1 ? Colors.black :  Colors.black.withOpacity(0.1),
     ),
   );
-  runApp(HomePage());
-  //runApp(DevicePreview(builder: (context) => HomePage(), enabled: !kReleaseMode,));
+  //runApp(HomePage());
+  runApp(DevicePreview(builder: (context) => HomePage(), enabled: !kReleaseMode,));
 }
