@@ -135,6 +135,7 @@ class _MenuBannerState extends State<MenuBanner> with TickerProviderStateMixin {
   }
 
   Widget row(String text, Color color, width) {
+    
     return Padding(
       padding: EdgeInsets.all(12.5),
       child: Material(
@@ -340,7 +341,7 @@ class _MenuBannerState extends State<MenuBanner> with TickerProviderStateMixin {
                       elevation: 10,
                       borderRadius: BorderRadius.circular(10),
                       child: Container(
-                        height: 140,
+                        height: height * 0.15,
                         decoration: BoxDecoration(
                             color: widget.brightness == Brightness.dark
                                 ? AppStyle.secondaryColorDark
@@ -374,12 +375,12 @@ class _MenuBannerState extends State<MenuBanner> with TickerProviderStateMixin {
                               child: widget.store.imageUrl == ''
                                   ? Image(
                                       image: AssetImage('assets/logo/logo.png'),
-                                      height: 50,
-                                      width: 50)
+                                      height: height * 0.07,
+                                      width: height * 0.07)
                                   : Image.network(
                                       widget.store.imageUrl,
-                                      height: 50,
-                                      width: 50,
+                                      height: height * 0.055,
+                                      width: height * 0.055,
                                       fit: BoxFit.cover,
                                     ),
                             ),
@@ -388,7 +389,7 @@ class _MenuBannerState extends State<MenuBanner> with TickerProviderStateMixin {
                       ]),
                 ),
                 Positioned(
-                    top: 95,
+                    top: height * 0.105,
                     left: 0,
                     right: 0,
                     child: Row(
@@ -397,7 +398,6 @@ class _MenuBannerState extends State<MenuBanner> with TickerProviderStateMixin {
                           Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                SizedBox(height: 20),
                                 Text(capitalize(maxThirteen(widget.store.name)),
                                     style: TextStyle(
                                         color:
@@ -409,7 +409,7 @@ class _MenuBannerState extends State<MenuBanner> with TickerProviderStateMixin {
                               ])
                         ])),
                 Positioned(
-                    top: 120,
+                    top: height * 0.135,
                     left: 0,
                     right: 0,
                     child: Row(

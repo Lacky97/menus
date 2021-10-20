@@ -73,7 +73,7 @@ class _QRScannerState extends State<QRScanner> {
         oneTime = false;
       });
       if (barcode != null) {
-        if (await canLaunch(url)) {
+        
           await launch(url).then((value) => !oneTime
               ? addQR(
                   Uri.parse(url)
@@ -81,16 +81,25 @@ class _QRScannerState extends State<QRScanner> {
                       .split('.')[Uri.parse(url).host.split('.').length - 2],
                   url.toString())
               : null);
-        } else {
-          throw 'Could not launch $url';
-        }
+
+
+        // informarsi meglio su canlaunch alcuni device non aprono il qr code
+        /*
+        await launch(url).then((value) => !oneTime
+              ? addQR(
+                  Uri.parse(url)
+                      .host
+                      .split('.')[Uri.parse(url).host.split('.').length - 2],
+                  url.toString())
+              : null);*/
+
       }
     }
   }
 
   Future addQR(String siteName, String url) async {
     var iconUrl = await Favicon.getBest(url.toString());
-    
+
     widget.boxes.values.forEach((element) {
       print(element.name);
       print(siteName);
@@ -101,12 +110,14 @@ class _QRScannerState extends State<QRScanner> {
         });
     });
     if (!areEqual) {
-
       final qr = Qrs()
         ..name = siteName
         ..url = url
         ..imageUrl = iconUrl == null ? '' : iconUrl.url.toString()
-        ..randomColor = iconUrl == null ? Colors.primaries[Random().nextInt(Colors.primaries.length)].value.toString() : '000000'  
+        ..randomColor = iconUrl == null
+            ? Colors.primaries[Random().nextInt(Colors.primaries.length)].value
+                .toString()
+            : '000000'
         ..category = 'Resturant/Bar';
 
       final box = Boxes.getQrs();
